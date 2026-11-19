@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Akdeniz Üni. YBS | Danışma Kurulu ve STAR Akreditasyon Paydaş Anketi</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="uni-badge">Akdeniz Üniversitesi • Uygulamalı Bilimler Fakültesi • YBS</div>
+      <h1>Öğretim Planı ve Paydaş Değerlendirme Anketi</h1>
+      <p>
+        18 Aralık 2026 Bölüm Danışma Kurulu ve STAR Akreditasyon Özdeğerlendirme Süreci Kapsamında
+        Öğrenci ve Mezun Görüşleri
+      </p>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="demoBanner" class="demo-banner hidden">
+      <strong>Yerel Test / Demo Modu:</strong> Google Apps Script bağlantısı henüz tanımlanmadığı için yanıtlar
+      sunucuya gönderilmeyecek, son adımda JSON çıktısı olarak önizlenip indirilebilecektir.
+    </div>
+
+    <div id="duplicateBanner" class="demo-banner hidden">
+      Bu tarayıcıdan daha önce anket gönderimi yapılmış görünüyor. Farklı bir katılımcı değilseniz veri
+      güvenilirliği açısından tekrar doldurmamanız önerilir.
+    </div>
+
+    <!-- İlerleme Çubuğu -->
+    <div id="progressCard" class="progress-card">
+      <div class="progress-top">
+        <span id="stepTitle">Adım 1 / 4: Bilgilendirme ve Katılımcı Profili</span>
+        <span id="stepPercent">25%</span>
+      </div>
+      <div class="progress-track">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+    </div>
+
+    <form id="surveyForm" novalidate>
+      <!-- Spam koruması için gizli alan -->
+      <div class="hp-field" aria-hidden="true">
+        <label for="websiteHp">Website</label>
+        <input type="text" id="websiteHp" name="websiteHp" tabindex="-1" autocomplete="off" />
+      </div>
+
+      <!-- ADIM 1: Onam ve Demografi -->
+      <section id="step1" class="card step-section">
+        <h2>1. Bilgilendirme, Onam ve Katılımcı Profili</h2>
+        <p class="card-subtitle">
+          Bu anket, Akdeniz Üniversitesi YBS lisans öğretim planının güncellenmesi, yapay zekâ ve güncel
+          teknolojilerin derslere entegrasyonu, İşyerinde Eğitim (YBS 402) ve akademik danışmanlık süreçlerinin
+          iyileştirilmesi amacıyla hazırlanmıştır.
+        </p>
+
+        <div class="info-box">
+          <strong>Anonimlik ve Kullanım Güvencesi:</strong>
+          <ul>
+            <li>Ad, soyad, öğrenci numarası veya e-posta gibi <strong>hiçbir kişisel kimlik verisi toplanmaz</strong>.</li>
+            <li>Sorular öğretim elemanlarını değil, <strong>ders içeriklerini, uygulama dengesini ve öğretim planını</strong> değerlendirmeye yöneliktir.</li>
+            <li>Yanıtlar toplu istatistiksel analizlere tabi tutularak Bölüm Danışma Kurulu'na sunulacaktır. Ortalama tamamlama süresi <strong>5–7 dakikadır</strong>.</li>
+          </ul>
+        </div>
+
+        <div id="errorStep1" class="alert-error"></div>
+
+        <div class="field-group">
+          <label class="consent-box">
+            <input type="checkbox" id="consentCheck" required />
+            <span>
+              Bilgilendirmeyi okudum; yanıtlarımın anonim olarak yalnızca bölüm kalite iyileştirme ve
+              Danışma Kurulu değerlendirmelerinde kullanılmasına gönüllü olarak onay veriyorum. <span class="req">*</span>
+            </span>
+          </label>
+        </div>
+
+        <div class="field-group">
+          <span class="field-label">Mevcut Öğrenim Statünüz <span class="req">*</span></span>
+          <span class="field-hint">Seçiminize göre yalnızca tamamladığınız son Bahar ve devam ettiğiniz Güz dönemi dersleri açılacaktır.</span>
+          <div class="status-grid">
+            <div class="status-option">
+              <input type="radio" name="participantStatus" id="st1" value="1" />
+              <label for="st1">1. Sınıf<small>1. Yarıyıl</small></label>
+            </div>
+            <div class="status-option">
+              <input type="radio" name="participantStatus" id="st2" value="2" />
+              <label for="st2">2. Sınıf<small>2. ve 3. Yarıyıl</small></label>
+            </div>
+            <div class="status-option">
+              <input type="radio" name="participantStatus" id="st3" value="3" />
+              <label for="st3">3. Sınıf<small>4. ve 5. Yarıyıl</small></label>
+            </div>
+            <div class="status-option">
+              <input type="radio" name="participantStatus" id="st4" value="4" />
+              <label for="st4">4. Sınıf<small>6. ve 7. Yarıyıl</small></label>
+            </div>
+            <div class="status-option">
+              <input type="radio" name="participantStatus" id="stMezun" value="Mezun" />
+              <label for="stMezun">Mezun<small>8. YY (YBS 402) &amp; Sektör</small></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Yalnızca 4. sınıf seçildiğinde açılan öğretim türü (geçen bahar II.Ö. ders eşleştirmesi için) -->
+        <div id="eveningWrap" class="field-group hidden">
+          <span class="field-label">Öğretim Türünüz (4. Sınıf Ders Eşleştirmesi İçin) <span class="req">*</span></span>
+          <div class="grid-2">
+            <div class="status-option">
+              <input type="radio" name="programType" id="prog1" value="I. Ogretim" />
+              <label for="prog1">I. Öğretim (Örgün)</label>
+            </div>
+            <div class="status-option">
+              <input type="radio" name="programType" id="prog2" value="II. Ogretim" />
+              <label for="prog2">II. Öğretim</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lisans Öğrencileri Ek Demografi -->
+        <div id="studentDemoWrap" class="grid-2 hidden">
+          <div class="field-group">
+            <label class="field-label" for="entryYear">Bölüme Giriş Yılınız <span class="req">*</span></label>
+            <select id="entryYear">
+              <option value="">Seçiniz...</option>
+              <option value="2026">2026</option>
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+              <option value="2023">2023</option>
+              <option value="2022">2022</option>
+              <option value="2021_oncesi">2021 ve öncesi</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="transferStatus">Giriş Şekliniz <span class="req">*</span></label>
+            <select id="transferStatus">
+              <option value="">Seçiniz...</option>
+              <option value="YKS">YKS (Doğrudan Yerleştirme)</option>
+              <option value="DGS">DGS (Dikey Geçiş)</option>
+              <option value="Yatay">Yatay Geçiş</option>
+              <option value="Diger">Diğer (YÖS / Ek Madde vb.)</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="gpaRange">Mevcut Genel Not Ortalaması (AGNO) Aralığınız</label>
+            <select id="gpaRange">
+              <option value="Belirtmek Istemiyorum">Belirtmek istemiyorum</option>
+              <option value="2.00_alti">2.00 altı</option>
+              <option value="2.00_2.49">2.00 – 2.49</option>
+              <option value="2.50_2.99">2.50 – 2.99</option>
+              <option value="3.00_3.49">3.00 – 3.49</option>
+              <option value="3.50_4.00">3.50 – 4.00</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="retakeStatus">Alttan/Üstten Ders Alma Durumunuz</label>
+            <select id="retakeStatus">
+              <option value="Normal">Tüm dersleri normal döneminde alıyorum</option>
+              <option value="Alttan">Alttan aldığım dersler var</option>
+              <option value="Ustten">Üstten aldığım dersler var</option>
+              <option value="HerIkisi">Hem alttan hem üstten ders alıyorum</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Mezun Ek Demografi -->
+        <div id="alumniDemoWrap" class="grid-2 hidden">
+          <div class="field-group">
+            <label class="field-label" for="gradYear">Mezuniyet Yılınız <span class="req">*</span></label>
+            <select id="gradYear">
+              <option value="">Seçiniz...</option>
+              <option value="2026">2026</option>
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+              <option value="2023">2023</option>
+              <option value="2022_oncesi">2022 ve öncesi</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="workStatus">Mevcut Çalışma Durumunuz <span class="req">*</span></label>
+            <select id="workStatus">
+              <option value="">Seçiniz...</option>
+              <option value="Bilisim_YBS">Bilişim / Yazılım / Veri / YBS alanında çalışıyorum</option>
+              <option value="Yonetim_Isletme">İşletme / Yönetim / Finans / Pazarlama alanında çalışıyorum</option>
+              <option value="Diger_Sektor">Farklı bir sektörde çalışıyorum</option>
+              <option value="Lisansustu">Lisansüstü eğitime devam ediyorum</option>
+              <option value="Is_Ariyor">İş arıyorum / Askerlik / Hazırlık sürecindeyim</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="nav-actions">
+          <span></span>
+          <button type="button" class="btn btn-primary" id="btnNext1">Devam Et →</button>
+        </div>
+      </section>
+
+      <!-- ADIM 2: Ortak Program ve Yetkinlik Ölçeği (EFA & ANOVA Katmanı) -->
+      <section id="step2" class="card step-section hidden">
+        <h2>2. Program ve Öğretim Planı Değerlendirme Ölçeği</h2>
+        <p class="card-subtitle">
+          Aşağıdaki ifadeleri <strong>1 (Kesinlikle Katılmıyorum)</strong> ile
+          <strong>5 (Kesinlikle Katılıyorum)</strong> arasında değerlendiriniz.
+        </p>
+
+        <div id="errorStep2" class="alert-error"></div>
+        <div id="commonScaleContainer"></div>
+
+        <div class="nav-actions">
+          <button type="button" class="btn btn-secondary" id="btnPrev2">← Geri</button>
+          <button type="button" class="btn btn-primary" id="btnNext2">Devam Et →</button>
+        </div>
+      </section>
+
+      <!-- ADIM 3: Koşullu Ders IPA Modülü (1-4. Sınıf) VEYA Mezun YBS 402 Modülü -->
+      <section id="step3" class="card step-section hidden">
+        <div id="studentCoursesModule" class="hidden">
+          <h2>3. Ders Bazlı Önem ve Yeterlilik Değerlendirmesi (IPA)</h2>
+          <p class="card-subtitle">
+            Önce <strong>fiilen aldığınız / şu an almakta olduğunuz dersleri</strong> işaretleyiniz (almadığınız
+            derslerin işaretini kaldırabilirsiniz). Ardından seçtiğiniz her ders için mavi ve mor kutulardaki iki ayrı soruyu puanlayınız.
+          </p>
+
+          <div class="info-box">
+            <strong>İki Sorunun Farkına Dikkat Ediniz:</strong><br />
+            • <strong style="color: #1d4ed8;">1. Soru (Mavi Kutu — Genel Kariyer Önemi):</strong> Dersin konusunun YBS mesleği açısından <em>genel olarak</em> ne kadar önemli olduğu (1: Hiç Önemli Değil — 5: Çok Önemli).<br />
+            • <strong style="color: #7e22ce;">2. Soru (Mor Kutu — Kendi Aldığın Dersin Yeterliliği):</strong> Bölümde <em>kendi aldığınız bu dersin</em> fiili içeriğinin, işlenişinin ve uygulamasının ne kadar yeterli olduğu (1: Çok Yetersiz — 5: Çok Yeterli).
+          </div>
+
+          <div id="errorStep3Student" class="alert-error"></div>
+          <div id="coursePickerContainer"></div>
+          <div id="ipaCardsContainer"></div>
+        </div>
+
+        <div id="alumniModule" class="hidden">
+          <h2>3. İşyerinde Eğitim (YBS 402) ve Sektörel Yetkinlik Analizi</h2>
+          <p class="card-subtitle">
+            8. yarıyıldaki <strong>YBS 402 İş Yerinde Eğitim</strong> uygulamasını ve mezuniyet sonrası iş yaşamında
+            eksikliğini hissettiğiniz yetkinlik alanlarını değerlendiriniz.
+          </p>
+
+          <div id="errorStep3Alumni" class="alert-error"></div>
+
+          <div id="ybs402Container" class="dimension-block"></div>
+
+          <div class="field-group" style="margin-top: 18px;">
+            <span class="field-label">
+              Mezuniyet sonrası iş yaşamında en çok eksikliğini hissettiğiniz YBS / teknoloji yetkinlikleri (En fazla 4 alan seçiniz) <span class="req">*</span>
+            </span>
+            <div id="skillGapsContainer" class="checkbox-list"></div>
+          </div>
+
+          <div class="field-group" style="margin-top: 18px;">
+            <span class="field-label">
+              İşyerinde Eğitim (YBS 402) sürecinin iyileştirilmesi için öncelikli gördüğünüz adımlar (En fazla 3 alan seçiniz) <span class="req">*</span>
+            </span>
+            <div id="ybs402ImprovementsContainer" class="checkbox-list"></div>
+          </div>
+        </div>
+
+        <div class="nav-actions">
+          <button type="button" class="btn btn-secondary" id="btnPrev3">← Geri</button>
+          <button type="button" class="btn btn-primary" id="btnNext3">Son Adıma Geç →</button>
+        </div>
+      </section>
+
+      <!-- ADIM 4: Yapılandırılmış (Seçilebilir) Danışma Kurulu Öncelikleri ve Gönderim -->
+      <section id="step4" class="card step-section hidden">
+        <h2>4. Yapay Zekâ, Öğretim Planı ve Bölüm Öncelikleri</h2>
+        <p class="card-subtitle">
+          Aşağıdaki üç başlıkta öncelikli gördüğünüz seçenekleri işaretleyiniz. Yanıtlar frekans analizine tabi tutularak
+          18 Aralık 2026 Bölüm Danışma Kurulu'na sunulacaktır.
+        </p>
+
+        <div id="errorStep4" class="alert-error"></div>
+
+        <div class="field-group">
+          <span class="field-label">
+            1. YBS öğretim planına eklenmesini veya ağırlığının artırılmasını istediğiniz güncel teknoloji alanları (En fazla 4 seçim) <span class="req">*</span>
+          </span>
+          <div id="step4AiTechContainer" class="checkbox-list"></div>
+        </div>
+
+        <div class="field-group" style="margin-top: 20px;">
+          <span class="field-label">
+            2. Derslerin daha verimli olması için öğretim planında ve değerlendirmede öncelikle hangi değişiklikler yapılmalıdır? (En fazla 3 seçim) <span class="req">*</span>
+          </span>
+          <div id="step4CurriculumContainer" class="checkbox-list"></div>
+        </div>
+
+        <div class="field-group" style="margin-top: 20px;">
+          <span class="field-label">
+            3. Akademik danışmanlık, laboratuvar ve bölüm süreçlerinde öncelikle neyin iyileştirilmesini istersiniz? (En fazla 3 seçim) <span class="req">*</span>
+          </span>
+          <div id="step4SupportContainer" class="checkbox-list"></div>
+        </div>
+
+        <div class="nav-actions">
+          <button type="button" class="btn btn-secondary" id="btnPrev4">← Geri</button>
+          <button type="submit" class="btn btn-success" id="btnSubmit">Anketi Gönder</button>
+        </div>
+      </section>
+
+      <!-- SONUÇ EKRANI -->
+      <section id="stepDone" class="card hidden">
+        <div class="success-box">
+          <div class="success-icon">✓</div>
+          <h2 id="doneTitle">Katılımınız İçin Teşekkür Ederiz</h2>
+          <p id="doneMessage" class="card-subtitle" style="margin-top: 8px;">
+            Yanıtlarınız anonim olarak kaydedilmiştir. Toplu analiz sonuçları 18 Aralık 2026 tarihli Bölüm Danışma Kurulu'nda değerlendirilecektir.
+          </p>
+          <div id="demoExportWrap" class="hidden" style="margin-top: 18px; text-align: left;">
+            <p style="font-size: 0.86rem; color: var(--muted); margin-bottom: 8px;">
+              <strong>Test Modu Çıktısı:</strong> Google Apps Script bağlantısı eklenmeden önce gönderilecek veri yapısını aşağıdan indirebilir veya inceleyebilirsiniz.
+            </p>
+            <button type="button" class="btn btn-primary" id="btnDownloadJson">JSON Yanıtını İndir</button>
+            <pre
+              id="demoJsonPreview"
+              style="margin-top: 12px; background: #0f172a; color: #e2e8f0; padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 0.76rem; max-height: 280px;"
+            ></pre>
+          </div>
+        </div>
+      </section>
+    </form>
+
+    <footer>
+      Akdeniz Üniversitesi Uygulamalı Bilimler Fakültesi • Yönetim Bilişim Sistemleri Bölümü<br />
+      STAR Akreditasyon ve Danışma Kurulu Paydaş Veri Toplama Sistemi (Anonim)
+    </footer>
+  </main>
+
+  <script src="courses.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

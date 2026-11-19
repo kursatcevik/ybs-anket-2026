@@ -1,0 +1,871 @@
+:root {
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --surface-alt: #f8fafc;
+  --primary: #0f2d52;
+  --primary-light: #1e4b82;
+  --accent: #c88a1e;
+  --accent-soft: #fdf5e6;
+  --text: #1a2433;
+  --muted: #5a687c;
+  --border: #dce3ec;
+  --danger: #b91c1c;
+  --danger-bg: #fef2f2;
+  --success: #15803d;
+  --success-bg: #f0fdf4;
+  --radius: 12px;
+  --shadow: 0 2px 10px rgba(15, 45, 82, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-header {
+  background: linear-gradient(135deg, var(--primary) 0%, #163e6e 100%);
+  color: #ffffff;
+  padding: 28px 16px 32px;
+  border-bottom: 4px solid var(--accent);
+}
+
+.header-inner {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.uni-badge {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.14);
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+
+.app-header h1 {
+  margin: 0 0 8px;
+  font-size: 1.45rem;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.app-header p {
+  margin: 0;
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.container {
+  max-width: 820px;
+  margin: -14px auto 48px;
+  padding: 0 14px;
+}
+
+/* İlerleme Çubuğu */
+.progress-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 8px;
+  z-index: 20;
+}
+
+.progress-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.progress-track {
+  width: 100%;
+  height: 7px;
+  background: #e5ebf3;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 25%;
+  background: linear-gradient(90deg, var(--primary-light), var(--accent));
+  transition: width 0.3s ease;
+}
+
+/* Kartlar */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+}
+
+.card h2 {
+  margin: 0 0 6px;
+  font-size: 1.18rem;
+  color: var(--primary);
+}
+
+.card-subtitle {
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.info-box {
+  background: var(--surface-alt);
+  border-left: 4px solid var(--primary-light);
+  padding: 12px 14px;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.88rem;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.info-box ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.info-box li {
+  margin-bottom: 4px;
+}
+
+.demo-banner {
+  background: var(--accent-soft);
+  border: 1px solid #e7c27c;
+  color: #6b4605;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  margin-bottom: 16px;
+}
+
+/* Form Alanları */
+.field-group {
+  margin-bottom: 18px;
+}
+
+.field-label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.93rem;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.field-label .req {
+  color: var(--danger);
+  margin-left: 2px;
+}
+
+.field-hint {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: -4px;
+  margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.94rem;
+  font-family: inherit;
+  color: var(--text);
+  background: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(30, 75, 130, 0.12);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 82px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+/* Statü Kart Seçimi */
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+  gap: 10px;
+}
+
+.status-option {
+  position: relative;
+}
+
+.status-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.status-option label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 13px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-alt);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-weight: 600;
+  font-size: 0.92rem;
+  min-height: 74px;
+}
+
+.status-option label small {
+  font-weight: 400;
+  font-size: 0.74rem;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.status-option input:checked + label {
+  border-color: var(--primary);
+  background: #edf3fb;
+  color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(15, 45, 82, 0.12);
+}
+
+/* Onam Kutusu */
+.consent-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-alt);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.consent-box input {
+  margin-top: 3px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+  flex-shrink: 0;
+}
+
+/* Ortak Ölçek Maddeleri */
+.dimension-block {
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  overflow: hidden;
+  background: #f4f7fb;
+}
+
+.dimension-header {
+  background: #e2ecf8;
+  color: #163a63;
+  padding: 14px 18px;
+  border-bottom: 1.5px solid #c7d9ee;
+  border-top: 4px solid #3b82f6;
+}
+
+.dimension-header h3 {
+  margin: 0 0 3px;
+  font-size: 1rem;
+  color: #163a63;
+}
+
+.dimension-header p {
+  margin: 0;
+  font-size: 0.83rem;
+  color: #476282;
+}
+
+.dimension-items {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.likert-item {
+  padding: 16px 16px 15px;
+  background: #ffffff;
+  border: 1.5px solid #d4dfec;
+  border-left: 4px solid #60a5fa;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(30, 75, 130, 0.04);
+}
+
+.likert-item.missing-error {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+  border-left-color: var(--danger);
+}
+
+.likert-question {
+  font-size: 0.94rem;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.likert-code {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--primary-light);
+  background: #e6eef8;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.likert-scale {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.likert-btn {
+  position: relative;
+}
+
+.likert-btn input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.likert-btn label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8px 4px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.14s ease;
+  min-height: 52px;
+}
+
+.likert-btn .num {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.likert-btn .lbl {
+  font-size: 0.67rem;
+  line-height: 1.15;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.likert-btn input:checked + label {
+  background: #3b82f6;
+  border-color: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.25);
+}
+
+.likert-btn input:checked + label .num,
+.likert-btn input:checked + label .lbl {
+  color: #ffffff;
+}
+
+/* Ders Seçim Çipleri */
+.semester-section {
+  margin-bottom: 22px;
+}
+
+.semester-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  border-bottom: 2px solid #e7edf5;
+}
+
+.semester-heading h3 {
+  margin: 0;
+  font-size: 1.02rem;
+  color: var(--primary);
+}
+
+.term-badge {
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #e8f0fa;
+  color: var(--primary);
+}
+
+.term-badge.past {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.course-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.course-chip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 9px 11px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-alt);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.14s ease;
+}
+
+.course-chip.selected {
+  border-color: var(--primary-light);
+  background: #edf3fb;
+}
+
+.course-chip input {
+  margin-top: 2px;
+  accent-color: var(--primary);
+  flex-shrink: 0;
+}
+
+.course-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 3px;
+}
+
+.tag {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.tag-ybs {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.tag-ortak {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.tag-secmeli {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* IPA Ders Kartları */
+.ipa-card {
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(15, 45, 82, 0.05);
+}
+
+.ipa-card.missing-error {
+  border-color: var(--danger);
+  background: var(--danger-bg);
+}
+
+.ipa-card-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1.5px solid #e2e8f0;
+}
+
+.ipa-card-title strong {
+  font-size: 0.98rem;
+  color: var(--primary);
+}
+
+.ipa-axes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.ipa-box {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1.5px solid transparent;
+}
+
+.ipa-box-imp {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  border-top: 4px solid #2563eb;
+}
+
+.ipa-box-perf {
+  background: #fdf4ff;
+  border-color: #f0abfc;
+  border-top: 4px solid #a855f7;
+}
+
+.ipa-axis-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 999px;
+  margin-bottom: 5px;
+}
+
+.ipa-box-imp .ipa-axis-badge {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.ipa-box-perf .ipa-axis-badge {
+  background: #f3e8ff;
+  color: #7e22ce;
+}
+
+.ipa-axis-label {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ipa-axis-label span {
+  font-weight: 500;
+  color: var(--muted);
+  font-size: 0.73rem;
+}
+
+.ipa-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.ipa-btn {
+  position: relative;
+}
+
+.ipa-btn input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ipa-btn label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  border: 1.5px solid #93c5fd;
+  border-radius: 7px;
+  background: #ffffff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #1e40af;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.ipa-btn input:checked + label {
+  background: #2563eb;
+  border-color: #1d4ed8;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.28);
+}
+
+.ipa-btn.perf label {
+  border-color: #d8b4fe;
+  color: #6b21a8;
+}
+
+.ipa-btn.perf input:checked + label {
+  background: #7e22ce;
+  border-color: #6b21a8;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(126, 34, 206, 0.28);
+}
+
+/* Ders Kartı Hızlı İyileştirme Etiketleri (Açık Uçlu Yerine Seçilebilir) */
+.ipa-tags-wrap {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.ipa-tags-title {
+  font-size: 0.76rem;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.ipa-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ipa-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 0.76rem;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  user-select: none;
+}
+
+.ipa-tag-chip input {
+  display: none;
+}
+
+.ipa-tag-chip.active {
+  background: #f3e8ff;
+  border-color: #a855f7;
+  color: #6b21a8;
+  font-weight: 600;
+}
+
+/* Çoklu Seçim (Yetkinlik Açığı) */
+.checkbox-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 8px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-alt);
+  cursor: pointer;
+  font-size: 0.86rem;
+}
+
+.checkbox-item input {
+  margin-top: 3px;
+  accent-color: var(--primary);
+  flex-shrink: 0;
+}
+
+/* Butonlar */
+.nav-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 11px 20px;
+  border-radius: 9px;
+  border: 1.5px solid transparent;
+  font-size: 0.93rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: var(--primary-light);
+}
+
+.btn-secondary {
+  background: #ffffff;
+  color: var(--primary);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--surface-alt);
+}
+
+.btn-success {
+  background: var(--success);
+  color: #ffffff;
+}
+
+.btn-success:hover {
+  background: #166534;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Uyarılar & Sonuç */
+.alert-error {
+  background: var(--danger-bg);
+  border: 1px solid #fecaca;
+  color: var(--danger);
+  padding: 11px 14px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  margin-bottom: 14px;
+  display: none;
+}
+
+.alert-error.visible {
+  display: block;
+}
+
+.success-box {
+  text-align: center;
+  padding: 28px 18px;
+}
+
+.success-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--success-bg);
+  color: var(--success);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Honeypot (spam koruma) */
+.hp-field {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  pointer-events: none;
+}
+
+footer {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 24px;
+  padding-bottom: 24px;
+}
+
+@media (max-width: 680px) {
+  .grid-2,
+  .ipa-axes {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .likert-btn label {
+    padding: 7px 2px;
+    min-height: 54px;
+  }
+
+  .likert-btn .lbl {
+    font-size: 0.61rem;
+  }
+
+  .nav-actions {
+    flex-direction: column-reverse;
+  }
+
+  .nav-actions .btn {
+    width: 100%;
+  }
+}
