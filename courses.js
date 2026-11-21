@@ -13,7 +13,7 @@ const CONFIG = {
   SURVEY_VERSION: "2026.11-STAR-v4",
   // İstemci/sunucu hiçbir yanıtı süre nedeniyle reddetmez; yalnızca analiz aşamasında bayraklanır.
   ANALYSIS_MIN_SECONDS_STUDENT: 85,
-  ANALYSIS_MIN_SECONDS_ALUMNI: 80,
+  ANALYSIS_MIN_SECONDS_ALUMNI: 45,
 };
 
 const SCALE_NA_VALUE = "Fikrim yok";
