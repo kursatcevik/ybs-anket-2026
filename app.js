@@ -672,7 +672,14 @@
     });
     ybs402Container.appendChild(itemsWrap);
 
-    renderCheckboxGroup(skillGapsContainer, "skillGaps", ALUMNI_SKILL_GAPS, 4, "errorStep4Alumni");
+    renderCheckboxGroup(
+      skillGapsContainer,
+      "skillGaps",
+      ALUMNI_SKILL_GAPS,
+      4,
+      "errorStep4Alumni",
+      ALUMNI_SKILL_GAPS_EXCLUSIVE
+    );
     renderCheckboxGroup(
       ybs402ImprovementsContainer,
       "ybs402Improvements",

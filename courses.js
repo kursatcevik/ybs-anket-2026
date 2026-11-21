@@ -10,8 +10,10 @@
 const CONFIG = {
   // Google Apps Script Web App URL'si (Aktif Canlı Bağlantı)
   APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbz6h8F6O08vyJF91viVWD2WenSBbbQF7AD2aRyh1m66ZaI0jN2jMTCggdTHDgjCtaK9/exec",
-  SURVEY_VERSION: "2026.11-STAR-v3",
-  MIN_EXPECTED_SECONDS: 85,
+  SURVEY_VERSION: "2026.11-STAR-v4",
+  // İstemci/sunucu hiçbir yanıtı süre nedeniyle reddetmez; yalnızca analiz aşamasında bayraklanır.
+  ANALYSIS_MIN_SECONDS_STUDENT: 85,
+  ANALYSIS_MIN_SECONDS_ALUMNI: 80,
 };
 
 const SCALE_NA_VALUE = "Fikrim yok";
@@ -355,6 +357,8 @@ const ALUMNI_YBS402_ITEMS = [
   },
 ];
 
+const ALUMNI_SKILL_GAPS_EXCLUSIVE = "Belirgin bir eksiklik hissetmiyorum / değerlendiremiyorum";
+
 const ALUMNI_SKILL_GAPS = [
   "Üretken Yapay Zekâ ve Büyük Dil Modelleri (LLM / Prompt & Agentic AI)",
   "Bulut Bilişim ve DevOps (AWS, Azure, GCP, Docker, CI/CD)",
@@ -365,6 +369,7 @@ const ALUMNI_SKILL_GAPS = [
   "Siber Güvenlik, Bilgi Güvenliği Yönetimi ve KVKK/Uyum",
   "Çevik Proje Yönetimi (Agile, Scrum, Jira) ve Ürün Yönetimi",
   "Mesleki İngilizce, Teknik Dokümantasyon ve İş İletişimi",
+  ALUMNI_SKILL_GAPS_EXCLUSIVE,
 ];
 
 /**
