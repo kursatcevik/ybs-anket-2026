@@ -11,7 +11,7 @@ const CONFIG = {
   // Google Apps Script Web App URL'si (Aktif Canlı Bağlantı)
   APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbz6h8F6O08vyJF91viVWD2WenSBbbQF7AD2aRyh1m66ZaI0jN2jMTCggdTHDgjCtaK9/exec",
   SURVEY_VERSION: "2026.11-STAR-v3",
-  MIN_EXPECTED_SECONDS: 45,
+  MIN_EXPECTED_SECONDS: 85,
 };
 
 const SCALE_NA_VALUE = "Fikrim yok";

@@ -410,6 +410,8 @@ textarea {
   cursor: pointer;
   transition: all 0.14s ease;
   min-height: 52px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .likert-btn .num {
@@ -423,6 +425,8 @@ textarea {
   line-height: 1.15;
   color: var(--muted);
   margin-top: 2px;
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
 
 .likert-btn input:checked + label {
@@ -922,46 +926,46 @@ footer {
 }
 
 @media (max-width: 680px) {
+  .container {
+    padding: 0 10px;
+  }
+
   .grid-2,
   .ipa-axes {
     grid-template-columns: 1fr;
   }
 
   .card {
-    padding: 16px;
+    padding: 15px 12px;
   }
 
-  .likert-btn label {
-    padding: 7px 2px;
-    min-height: 54px;
+  .dimension-header {
+    padding: 12px 14px;
   }
 
-  .likert-btn .lbl {
-    font-size: 0.61rem;
+  .dimension-items {
+    padding: 8px;
+    gap: 10px;
+  }
+
+  .likert-item {
+    padding: 12px 10px;
   }
 
   .likert-scale,
   .competency-scale {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-
-  .likert-scale .likert-btn-na,
-  .competency-scale .competency-btn-na {
-    grid-column: 1 / -1;
-  }
-
-  .likert-scale .likert-btn-na label,
-  .competency-scale .competency-btn-na label {
-    min-height: 38px;
-    flex-direction: row;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 6px;
-    padding: 6px 10px;
   }
 
-  .likert-scale .likert-btn-na .lbl,
-  .competency-scale .competency-btn-na .lbl {
-    font-size: 0.78rem;
-    margin-top: 0;
+  .likert-btn label {
+    padding: 8px 5px;
+    min-height: 56px;
+  }
+
+  .likert-btn .lbl {
+    font-size: 0.7rem;
+    line-height: 1.2;
   }
 
   .nav-actions {
@@ -970,5 +974,12 @@ footer {
 
   .nav-actions .btn {
     width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .likert-scale,
+  .competency-scale {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
