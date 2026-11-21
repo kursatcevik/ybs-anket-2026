@@ -26,11 +26,15 @@
   const alumniDemoWrap = document.getElementById("alumniDemoWrap");
 
   const commonScaleContainer = document.getElementById("commonScaleContainer");
+  const competencyStemEl = document.getElementById("competencyStem");
+  const competencyContainer = document.getElementById("competencyContainer");
   const studentCoursesModule = document.getElementById("studentCoursesModule");
   const alumniModule = document.getElementById("alumniModule");
   const coursePickerContainer = document.getElementById("coursePickerContainer");
   const ipaCardsContainer = document.getElementById("ipaCardsContainer");
   const ybs402Container = document.getElementById("ybs402Container");
+  const ybs402QuestionsWrap = document.getElementById("ybs402QuestionsWrap");
+  const ybs402SkippedNote = document.getElementById("ybs402SkippedNote");
   const skillGapsContainer = document.getElementById("skillGapsContainer");
   const ybs402ImprovementsContainer = document.getElementById("ybs402ImprovementsContainer");
   const step4AiTechContainer = document.getElementById("step4AiTechContainer");
@@ -38,10 +42,11 @@
   const step4SupportContainer = document.getElementById("step4SupportContainer");
 
   const STEP_LABELS = {
-    1: "Adım 1 / 4: Bilgilendirme ve Katılımcı Profili",
-    2: "Adım 2 / 4: Program ve Öğretim Planı Ölçeği",
-    3: "Adım 3 / 4: Ders / İşyerinde Eğitim Değerlendirmesi",
-    4: "Adım 4 / 4: Yapay Zekâ ve Bölüm Öncelikleri",
+    1: "Adım 1 / 5: Bilgilendirme ve Katılımcı Profili",
+    2: "Adım 2 / 5: Program ve Öğretim Planı Ölçeği",
+    3: "Adım 3 / 5: Genel Yetkinlikler",
+    4: "Adım 4 / 5: Ders / İşyerinde Eğitim Değerlendirmesi",
+    5: "Adım 5 / 5: Yapay Zekâ ve Bölüm Öncelikleri",
   };
 
   function init() {
@@ -94,6 +99,15 @@
         selectedCourses.clear();
       });
     });
+
+    document.querySelectorAll('input[name="ybs402Taken"]').forEach((radio) => {
+      radio.addEventListener("change", () => {
+        const took = radio.value === "Evet";
+        ybs402QuestionsWrap.classList.toggle("hidden", !took);
+        ybs402SkippedNote.classList.toggle("hidden", took);
+        showError("errorStep4Alumni", "");
+      });
+    });
   }
 
   function bindNavigation() {
@@ -106,17 +120,24 @@
     document.getElementById("btnPrev2").addEventListener("click", () => goToStep(1));
     document.getElementById("btnNext2").addEventListener("click", () => {
       if (!validateStep2()) return;
-      prepareStep3();
+      renderCompetencies(getSelectedStatus() === "Mezun");
       goToStep(3);
     });
 
     document.getElementById("btnPrev3").addEventListener("click", () => goToStep(2));
     document.getElementById("btnNext3").addEventListener("click", () => {
       if (!validateStep3()) return;
+      prepareStep4();
       goToStep(4);
     });
 
     document.getElementById("btnPrev4").addEventListener("click", () => goToStep(3));
+    document.getElementById("btnNext4").addEventListener("click", () => {
+      if (!validateStep4()) return;
+      goToStep(5);
+    });
+
+    document.getElementById("btnPrev5").addEventListener("click", () => goToStep(4));
 
     form.addEventListener("submit", handleSubmit);
 
@@ -141,7 +162,7 @@
   }
 
   function updateProgress(stepNum) {
-    const pct = stepNum * 25;
+    const pct = stepNum * 20;
     stepTitleEl.textContent = STEP_LABELS[stepNum] || "";
     stepPercentEl.textContent = `${pct}%`;
     progressFillEl.style.width = `${pct}%`;
@@ -229,12 +250,13 @@
         row.id = `item_wrap_${item.code}`;
 
         const text = isAlumni ? item.alumniText : item.studentText;
-        const buttonsHtml = LIKERT_SCALE.map((opt) => {
+        const buttonsHtml = LIKERT_SCALE.map((opt, idx) => {
           const checkedAttr = prevAnswers[item.code] === String(opt.value) ? "checked" : "";
-          const inputId = `scale_${item.code}_${opt.value}`;
+          const inputId = `scale_${item.code}_${idx}`;
+          const naClass = opt.isNa ? " likert-btn-na" : "";
           return `
-            <div class="likert-btn">
-              <input type="radio" id="${inputId}" name="scale_${item.code}" value="${opt.value}" ${checkedAttr} />
+            <div class="likert-btn${naClass}">
+              <input type="radio" id="${inputId}" name="scale_${item.code}" value="${escapeHtml(opt.value)}" ${checkedAttr} />
               <label for="${inputId}">
                 <span class="num">${opt.short}</span>
                 <span class="lbl">${opt.label}</span>
@@ -275,15 +297,104 @@
     });
 
     if (firstMissing) {
-      showError("errorStep2", "Lütfen işaretlenmemiş tüm ölçek maddelerini yanıtlayınız (kırmızı ile vurgulanan maddeler).");
+      showError(
+        "errorStep2",
+        'Lütfen işaretlenmemiş tüm ölçek maddelerini yanıtlayınız; henüz değerlendiremediğiniz maddelerde "Fikrim yok" seçebilirsiniz.'
+      );
       firstMissing.scrollIntoView({ behavior: "smooth", block: "center" });
       return false;
     }
     return true;
   }
 
-  /* ---------------- ADIM 3: KOŞULLU DERS IPA / MEZUN MODÜLÜ ---------------- */
-  function prepareStep3() {
+  /* ---------------- ADIM 3: GENEL YETKİNLİKLER (C1–C6) ---------------- */
+  function renderCompetencies(isAlumni) {
+    // Mevcut seçimleri koru
+    const prevAnswers = {};
+    GENERAL_COMPETENCIES.items.forEach((item) => {
+      const checked = document.querySelector(`input[name="comp_${item.code}"]:checked`);
+      if (checked) prevAnswers[item.code] = checked.value;
+    });
+
+    const stemText = isAlumni ? GENERAL_COMPETENCIES.alumniStem : GENERAL_COMPETENCIES.studentStem;
+    if (competencyStemEl) {
+      competencyStemEl.textContent = stemText;
+    }
+
+    competencyContainer.innerHTML = "";
+
+    const block = document.createElement("div");
+    block.className = "dimension-block competency-block";
+
+    const header = document.createElement("div");
+    header.className = "dimension-header";
+    header.innerHTML = `<h3>${GENERAL_COMPETENCIES.title}</h3><p>${stemText}</p>`;
+    block.appendChild(header);
+
+    const itemsWrap = document.createElement("div");
+    itemsWrap.className = "dimension-items";
+
+    GENERAL_COMPETENCIES.items.forEach((item) => {
+      const row = document.createElement("div");
+      row.className = "likert-item";
+      row.id = `item_wrap_${item.code}`;
+
+      const buttonsHtml = COMPETENCY_SCALE.map((opt, idx) => {
+        const checkedAttr = prevAnswers[item.code] === String(opt.value) ? "checked" : "";
+        const inputId = `comp_${item.code}_${idx}`;
+        const naClass = opt.isNa ? " competency-btn-na" : "";
+        return `
+          <div class="likert-btn${naClass}">
+            <input type="radio" id="${inputId}" name="comp_${item.code}" value="${escapeHtml(opt.value)}" ${checkedAttr} />
+            <label for="${inputId}">
+              <span class="num">${opt.short}</span>
+              <span class="lbl">${opt.label}</span>
+            </label>
+          </div>
+        `;
+      }).join("");
+
+      row.innerHTML = `
+        <div class="likert-question">
+          <span class="likert-code">${item.code}</span>${item.text}
+        </div>
+        <div class="competency-scale">${buttonsHtml}</div>
+      `;
+      itemsWrap.appendChild(row);
+    });
+
+    block.appendChild(itemsWrap);
+    competencyContainer.appendChild(block);
+  }
+
+  function validateStep3() {
+    showError("errorStep3", "");
+    let firstMissing = null;
+
+    GENERAL_COMPETENCIES.items.forEach((item) => {
+      const wrap = document.getElementById(`item_wrap_${item.code}`);
+      const checked = document.querySelector(`input[name="comp_${item.code}"]:checked`);
+      if (!checked) {
+        wrap.classList.add("missing-error");
+        if (!firstMissing) firstMissing = wrap;
+      } else {
+        wrap.classList.remove("missing-error");
+      }
+    });
+
+    if (firstMissing) {
+      showError(
+        "errorStep3",
+        'Lütfen tüm genel yetkinlik maddelerini (C1–C6) değerlendiriniz; kararsızsanız "Fikrim yok" seçeneğini işaretleyebilirsiniz.'
+      );
+      firstMissing.scrollIntoView({ behavior: "smooth", block: "center" });
+      return false;
+    }
+    return true;
+  }
+
+  /* ---------------- ADIM 4: KOŞULLU DERS IPA / MEZUN MODÜLÜ ---------------- */
+  function prepareStep4() {
     const status = getSelectedStatus();
     if (status === "Mezun") {
       studentCoursesModule.classList.add("hidden");
@@ -335,6 +446,7 @@
             code: course.code,
             name: course.name,
             category: course.category,
+            group: course.group || "",
             mandatory: course.mandatory,
             importance: null,
             performance: null,
@@ -372,6 +484,7 @@
               code: course.code,
               name: course.name,
               category: course.category,
+              group: course.group || "",
               mandatory: course.mandatory,
               importance: null,
               performance: null,
@@ -523,7 +636,7 @@
     ybs402Container.innerHTML = `
       <div class="dimension-header">
         <h3>YBS 402 — İş Yerinde Eğitim (8. Yarıyıl) Süreç Değerlendirmesi</h3>
-        <p>1 (Kesinlikle Katılmıyorum) — 5 (Kesinlikle Katılıyorum)</p>
+        <p>1 (Kesinlikle Katılmıyorum) — 5 (Kesinlikle Katılıyorum) veya "Fikrim yok"</p>
       </div>
     `;
 
@@ -535,11 +648,12 @@
       row.className = "likert-item";
       row.id = `item_wrap_${item.code}`;
 
-      const buttonsHtml = LIKERT_SCALE.map((opt) => {
-        const inputId = `ybs402_${item.code}_${opt.value}`;
+      const buttonsHtml = LIKERT_SCALE.map((opt, idx) => {
+        const inputId = `ybs402_${item.code}_${idx}`;
+        const naClass = opt.isNa ? " likert-btn-na" : "";
         return `
-          <div class="likert-btn">
-            <input type="radio" id="${inputId}" name="ybs402_${item.code}" value="${opt.value}" />
+          <div class="likert-btn${naClass}">
+            <input type="radio" id="${inputId}" name="ybs402_${item.code}" value="${escapeHtml(opt.value)}" />
             <label for="${inputId}">
               <span class="num">${opt.short}</span>
               <span class="lbl">${opt.label}</span>
@@ -558,13 +672,13 @@
     });
     ybs402Container.appendChild(itemsWrap);
 
-    renderCheckboxGroup(skillGapsContainer, "skillGaps", ALUMNI_SKILL_GAPS, 4, "errorStep3Alumni");
+    renderCheckboxGroup(skillGapsContainer, "skillGaps", ALUMNI_SKILL_GAPS, 4, "errorStep4Alumni");
     renderCheckboxGroup(
       ybs402ImprovementsContainer,
       "ybs402Improvements",
       ALUMNI_YBS402_IMPROVEMENTS,
       3,
-      "errorStep3Alumni"
+      "errorStep4Alumni"
     );
   }
 
@@ -574,21 +688,21 @@
       "step4AiTech",
       STEP4_QUESTIONS.aiTech.options,
       STEP4_QUESTIONS.aiTech.maxSelect,
-      "errorStep4"
+      "errorStep5"
     );
     renderCheckboxGroup(
       step4CurriculumContainer,
       "step4Curriculum",
       STEP4_QUESTIONS.curriculum.options,
       STEP4_QUESTIONS.curriculum.maxSelect,
-      "errorStep4"
+      "errorStep5"
     );
     renderCheckboxGroup(
       step4SupportContainer,
       "step4Support",
       STEP4_QUESTIONS.support.options,
       STEP4_QUESTIONS.support.maxSelect,
-      "errorStep4"
+      "errorStep5"
     );
   }
 
@@ -620,40 +734,49 @@
     return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map((el) => el.value);
   }
 
-  function validateStep3() {
+  function validateStep4() {
     const status = getSelectedStatus();
     if (status === "Mezun") {
-      showError("errorStep3Alumni", "");
-      let firstMissing = null;
-      ALUMNI_YBS402_ITEMS.forEach((item) => {
-        const wrap = document.getElementById(`item_wrap_${item.code}`);
-        const checked = document.querySelector(`input[name="ybs402_${item.code}"]:checked`);
-        if (!checked) {
-          wrap.classList.add("missing-error");
-          if (!firstMissing) firstMissing = wrap;
-        } else {
-          wrap.classList.remove("missing-error");
+      showError("errorStep4Alumni", "");
+      const ybs402Choice = document.querySelector('input[name="ybs402Taken"]:checked');
+      if (!ybs402Choice) {
+        showError("errorStep4Alumni", "Lütfen YBS 402 (İş Yerinde Eğitim) dersini alıp almadığınızı belirtiniz.");
+        return false;
+      }
+
+      if (ybs402Choice.value === "Evet") {
+        let firstMissing = null;
+        ALUMNI_YBS402_ITEMS.forEach((item) => {
+          const wrap = document.getElementById(`item_wrap_${item.code}`);
+          const checked = document.querySelector(`input[name="ybs402_${item.code}"]:checked`);
+          if (!checked) {
+            wrap.classList.add("missing-error");
+            if (!firstMissing) firstMissing = wrap;
+          } else {
+            wrap.classList.remove("missing-error");
+          }
+        });
+        if (firstMissing) {
+          showError("errorStep4Alumni", "Lütfen İşyerinde Eğitim (YBS 402) maddelerinin tamamını yanıtlayınız.");
+          firstMissing.scrollIntoView({ behavior: "smooth", block: "center" });
+          return false;
         }
-      });
-      if (firstMissing) {
-        showError("errorStep3Alumni", "Lütfen İşyerinde Eğitim (YBS 402) maddelerinin tamamını yanıtlayınız.");
-        firstMissing.scrollIntoView({ behavior: "smooth", block: "center" });
-        return false;
+        if (getCheckedValues("ybs402Improvements").length === 0) {
+          showError("errorStep4Alumni", "Lütfen İşyerinde Eğitim (YBS 402) için en az 1 iyileştirme seçeneği işaretleyiniz.");
+          return false;
+        }
       }
+
       if (getCheckedValues("skillGaps").length === 0) {
-        showError("errorStep3Alumni", "Lütfen iş yaşamında eksikliğini hissettiğiniz en az 1 yetkinlik alanı seçiniz.");
-        return false;
-      }
-      if (getCheckedValues("ybs402Improvements").length === 0) {
-        showError("errorStep3Alumni", "Lütfen İşyerinde Eğitim (YBS 402) için en az 1 iyileştirme seçeneği işaretleyiniz.");
+        showError("errorStep4Alumni", "Lütfen iş yaşamında eksikliğini hissettiğiniz en az 1 yetkinlik alanı seçiniz.");
         return false;
       }
       return true;
     }
 
-    showError("errorStep3Student", "");
+    showError("errorStep4Student", "");
     if (selectedCourses.size === 0) {
-      showError("errorStep3Student", "Lütfen değerlendirmek üzere aldığınız en az bir dersi işaretleyiniz.");
+      showError("errorStep4Student", "Lütfen değerlendirmek üzere aldığınız en az bir dersi işaretleyiniz.");
       return false;
     }
 
@@ -670,7 +793,7 @@
 
     if (firstMissingCard) {
       showError(
-        "errorStep3Student",
+        "errorStep4Student",
         "Lütfen seçtiğiniz tüm dersler için hem mavi kutudaki 'Genel Kariyer Önemi' hem de mor kutudaki 'Kendi Aldığın Dersin Yeterliliği' puanlarını işaretleyiniz."
       );
       firstMissingCard.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -679,18 +802,18 @@
     return true;
   }
 
-  function validateStep4() {
-    showError("errorStep4", "");
+  function validateStep5() {
+    showError("errorStep5", "");
     if (getCheckedValues("step4AiTech").length === 0) {
-      showError("errorStep4", "Lütfen 1. soruda (güncel teknoloji alanları) en az 1 seçenek işaretleyiniz.");
+      showError("errorStep5", "Lütfen 1. soruda (güncel teknoloji alanları) en az 1 seçenek işaretleyiniz.");
       return false;
     }
     if (getCheckedValues("step4Curriculum").length === 0) {
-      showError("errorStep4", "Lütfen 2. soruda (öğretim planı ve değerlendirme) en az 1 seçenek işaretleyiniz.");
+      showError("errorStep5", "Lütfen 2. soruda (öğretim planı ve değerlendirme) en az 1 seçenek işaretleyiniz.");
       return false;
     }
     if (getCheckedValues("step4Support").length === 0) {
-      showError("errorStep4", "Lütfen 3. soruda (danışmanlık ve bölüm süreçleri) en az 1 seçenek işaretleyiniz.");
+      showError("errorStep5", "Lütfen 3. soruda (danışmanlık ve bölüm süreçleri) en az 1 seçenek işaretleyiniz.");
       return false;
     }
     return true;
@@ -707,8 +830,26 @@
     COMMON_SCALE_DIMENSIONS.forEach((dim) => {
       dim.items.forEach((item) => {
         const checked = document.querySelector(`input[name="scale_${item.code}"]:checked`);
-        commonScale[item.code] = checked ? Number(checked.value) : null;
+        if (!checked) {
+          commonScale[item.code] = null;
+        } else if (checked.value === SCALE_NA_VALUE) {
+          commonScale[item.code] = SCALE_NA_VALUE;
+        } else {
+          commonScale[item.code] = Number(checked.value);
+        }
       });
+    });
+
+    const generalCompetencies = {};
+    GENERAL_COMPETENCIES.items.forEach((item) => {
+      const checked = document.querySelector(`input[name="comp_${item.code}"]:checked`);
+      if (!checked) {
+        generalCompetencies[item.code] = null;
+      } else if (checked.value === COMPETENCY_NA_VALUE) {
+        generalCompetencies[item.code] = COMPETENCY_NA_VALUE;
+      } else {
+        generalCompetencies[item.code] = Number(checked.value);
+      }
     });
 
     const courses = [];
@@ -720,6 +861,7 @@
           code: c.code,
           name: c.name,
           category: c.category,
+          group: c.group || "",
           mandatory: c.mandatory,
           importance: c.importance,
           performance: c.performance,
@@ -730,17 +872,28 @@
 
     let alumniData = null;
     if (isAlumni) {
+      const ybs402TakenEl = document.querySelector('input[name="ybs402Taken"]:checked');
+      const ybs402Taken = ybs402TakenEl ? ybs402TakenEl.value : "";
       const ybs402 = {};
-      ALUMNI_YBS402_ITEMS.forEach((item) => {
-        const checked = document.querySelector(`input[name="ybs402_${item.code}"]:checked`);
-        ybs402[item.code] = checked ? Number(checked.value) : null;
-      });
+      if (ybs402Taken === "Evet") {
+        ALUMNI_YBS402_ITEMS.forEach((item) => {
+          const checked = document.querySelector(`input[name="ybs402_${item.code}"]:checked`);
+          if (!checked) {
+            ybs402[item.code] = null;
+          } else if (checked.value === SCALE_NA_VALUE) {
+            ybs402[item.code] = SCALE_NA_VALUE;
+          } else {
+            ybs402[item.code] = Number(checked.value);
+          }
+        });
+      }
       alumniData = {
         gradYear: document.getElementById("gradYear").value,
         workStatus: document.getElementById("workStatus").value,
+        ybs402Taken,
         ybs402,
         skillGaps: getCheckedValues("skillGaps"),
-        ybs402Note: getCheckedValues("ybs402Improvements").join(" | "),
+        ybs402Note: ybs402Taken === "Evet" ? getCheckedValues("ybs402Improvements").join(" | ") : "",
       };
     }
 
@@ -759,6 +912,7 @@
         retakeStatus: isAlumni ? "" : document.getElementById("retakeStatus").value,
       },
       commonScale,
+      generalCompetencies,
       courses,
       extraCoursesNote: "",
       alumniData,
@@ -766,13 +920,14 @@
         aiAndTech: getCheckedValues("step4AiTech").join(" | "),
         curriculum: getCheckedValues("step4Curriculum").join(" | "),
         general: getCheckedValues("step4Support").join(" | "),
+        boardSuggestion: document.getElementById("openBoardSuggestion").value.trim(),
       },
     };
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!validateStep4()) return;
+    if (!validateStep5()) return;
 
     const btn = document.getElementById("btnSubmit");
     const payload = buildPayload();
@@ -817,7 +972,7 @@
 
       finishSurvey(false, payload);
     } catch (err) {
-      showError("errorStep4", `Gönderim sırasında bir hata oluştu: ${err.message}`);
+      showError("errorStep5", `Gönderim sırasında bir hata oluştu: ${err.message}`);
       btn.disabled = false;
       btn.textContent = "Anketi Gönder";
     }

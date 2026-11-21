@@ -108,7 +108,7 @@ body {
 
 .progress-fill {
   height: 100%;
-  width: 25%;
+  width: 20%;
   background: linear-gradient(90deg, var(--primary-light), var(--accent));
   transition: width 0.3s ease;
 }
@@ -365,8 +365,26 @@ textarea {
 
 .likert-scale {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr)) minmax(86px, 1.15fr);
   gap: 6px;
+}
+
+.likert-btn-na label {
+  background: #f8fafc;
+  border-style: dashed;
+  border-color: #94a3b8;
+}
+
+.likert-btn-na .num {
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.likert-btn-na input:checked + label {
+  background: #475569 !important;
+  border-style: solid !important;
+  border-color: #334155 !important;
+  box-shadow: 0 2px 6px rgba(51, 65, 85, 0.22) !important;
 }
 
 .likert-btn {
@@ -417,6 +435,67 @@ textarea {
 .likert-btn input:checked + label .num,
 .likert-btn input:checked + label .lbl {
   color: #ffffff;
+}
+
+/* Genel Yetkinlikler (C1–C6) Ayrı Blok (1–5 + Fikrim yok) */
+.competency-stem {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.competency-block .dimension-header {
+  background: #e6f4f1;
+  color: #0f4c4c;
+  border-bottom-color: #b8dfd7;
+  border-top-color: #0d6e6e;
+}
+
+.competency-block .dimension-header h3 {
+  color: #0f4c4c;
+}
+
+.competency-block .dimension-header p {
+  color: #2f6666;
+}
+
+.competency-block .likert-item {
+  border-left-color: #0d9488;
+}
+
+.competency-block .likert-code {
+  background: #e0f2fe;
+  color: #0f4c4c;
+}
+
+.competency-scale {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) minmax(86px, 1.15fr);
+  gap: 6px;
+}
+
+.competency-scale .likert-btn input:checked + label {
+  background: #0d6e6e;
+  border-color: #0b5a5a;
+  box-shadow: 0 2px 6px rgba(13, 110, 110, 0.25);
+}
+
+.competency-scale .competency-btn-na label {
+  background: #f8fafc;
+  border-style: dashed;
+  border-color: #94a3b8;
+}
+
+.competency-scale .competency-btn-na .num {
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.competency-scale .competency-btn-na input:checked + label {
+  background: #475569;
+  border-style: solid;
+  border-color: #334155;
+  box-shadow: 0 2px 6px rgba(51, 65, 85, 0.22);
 }
 
 /* Ders Seçim Çipleri */
@@ -859,6 +938,30 @@ footer {
 
   .likert-btn .lbl {
     font-size: 0.61rem;
+  }
+
+  .likert-scale,
+  .competency-scale {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .likert-scale .likert-btn-na,
+  .competency-scale .competency-btn-na {
+    grid-column: 1 / -1;
+  }
+
+  .likert-scale .likert-btn-na label,
+  .competency-scale .competency-btn-na label {
+    min-height: 38px;
+    flex-direction: row;
+    gap: 6px;
+    padding: 6px 10px;
+  }
+
+  .likert-scale .likert-btn-na .lbl,
+  .competency-scale .competency-btn-na .lbl {
+    font-size: 0.78rem;
+    margin-top: 0;
   }
 
   .nav-actions {

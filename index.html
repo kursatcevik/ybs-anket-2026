@@ -32,8 +32,8 @@
     <!-- İlerleme Çubuğu -->
     <div id="progressCard" class="progress-card">
       <div class="progress-top">
-        <span id="stepTitle">Adım 1 / 4: Bilgilendirme ve Katılımcı Profili</span>
-        <span id="stepPercent">25%</span>
+        <span id="stepTitle">Adım 1 / 5: Bilgilendirme ve Katılımcı Profili</span>
+        <span id="stepPercent">20%</span>
       </div>
       <div class="progress-track">
         <div id="progressFill" class="progress-fill"></div>
@@ -57,11 +57,11 @@
         </p>
 
         <div class="info-box">
-          <strong>Anonimlik ve Kullanım Güvencesi:</strong>
+          <strong>Veri Sorumlusu, Gizlilik ve Kullanım Güvencesi:</strong>
           <ul>
-            <li>Ad, soyad, öğrenci numarası veya e-posta gibi <strong>hiçbir kişisel kimlik verisi toplanmaz</strong>.</li>
-            <li>Sorular öğretim elemanlarını değil, <strong>ders içeriklerini, uygulama dengesini ve öğretim planını</strong> değerlendirmeye yöneliktir.</li>
-            <li>Yanıtlar toplu istatistiksel analizlere tabi tutularak Bölüm Danışma Kurulu'na sunulacaktır. Ortalama tamamlama süresi <strong>5–7 dakikadır</strong>.</li>
+            <li><strong>Veri Sorumlusu ve Saklama:</strong> Bu araştırmanın veri sorumlusu <strong>Akdeniz Üniversitesi Uygulamalı Bilimler Fakültesi Yönetim Bilişim Sistemleri (YBS) Bölüm Başkanlığıdır</strong>. Ad, soyad, öğrenci numarası veya e-posta gibi hiçbir kişisel kimlik verisi toplanmaz; yanıtlarınız bölüm yönetiminin erişimindeki Google E-Tablo ortamında tamamen anonim olarak saklanır.</li>
+            <li><strong>Kullanım Amacı ve Raporlama:</strong> Toplanan veriler yalnızca <strong>bölüm kalite iyileştirme ve STAR akreditasyon süreçleri</strong> kapsamında değerlendirilecektir. Bölüm Danışma Kuruluna yalnızca toplu istatistiksel sonuçlar ve <strong>ders grubu düzeyinde</strong> özetler sunulacak; 5 yanıttan az veri toplanan dersler hiçbir şekilde raporlanmayacaktır.</li>
+            <li><strong>Odak ve Süre:</strong> Sorular öğretim elemanlarını değil, ders içeriklerini, uygulama dengesini ve öğretim planını değerlendirmeye yöneliktir. Ortalama tamamlama süresi <strong>8–10 dakikadır</strong>.</li>
           </ul>
         </div>
 
@@ -71,8 +71,8 @@
           <label class="consent-box">
             <input type="checkbox" id="consentCheck" required />
             <span>
-              Bilgilendirmeyi okudum; yanıtlarımın anonim olarak yalnızca bölüm kalite iyileştirme ve
-              Danışma Kurulu değerlendirmelerinde kullanılmasına gönüllü olarak onay veriyorum. <span class="req">*</span>
+              Bilgilendirmeyi okudum; yanıtlarımın anonim olarak yalnızca bölüm kalite iyileştirme, STAR akreditasyon
+              ve Danışma Kurulu değerlendirmelerinde kullanılmasına gönüllü olarak onay veriyorum. <span class="req">*</span>
             </span>
           </label>
         </div>
@@ -202,7 +202,8 @@
         <h2>2. Program ve Öğretim Planı Değerlendirme Ölçeği</h2>
         <p class="card-subtitle">
           Aşağıdaki ifadeleri <strong>1 (Kesinlikle Katılmıyorum)</strong> ile
-          <strong>5 (Kesinlikle Katılıyorum)</strong> arasında değerlendiriniz.
+          <strong>5 (Kesinlikle Katılıyorum)</strong> arasında değerlendiriniz; henüz deneyimlemediğiniz veya
+          değerlendiremeyeceğiniz bir madde varsa <strong>Fikrim yok</strong> seçeneğini işaretleyebilirsiniz.
         </p>
 
         <div id="errorStep2" class="alert-error"></div>
@@ -214,10 +215,29 @@
         </div>
       </section>
 
-      <!-- ADIM 3: Koşullu Ders IPA Modülü (1-4. Sınıf) VEYA Mezun YBS 402 Modülü -->
+      <!-- ADIM 3: Genel Yetkinlikler (C1–C6 — Ayrı Blok, Üçlü Paydaş Karşılaştırması) -->
       <section id="step3" class="card step-section hidden">
+        <h2>3. Genel Yetkinlikler</h2>
+        <p id="competencyStem" class="card-subtitle competency-stem">
+          Program şu ana kadar aşağıdaki yetkinlikleri size ne ölçüde kazandırdı?
+        </p>
+        <p class="field-hint" style="margin-top: -8px; margin-bottom: 14px;">
+          Her bir yetkinlik için <strong>1 (Hiç)</strong> ile <strong>5 (Çok iyi)</strong> arasında seçim yapınız; değerlendiremeyeceğiniz bir alan varsa <strong>Fikrim yok</strong> seçeneğini işaretleyebilirsiniz.
+        </p>
+
+        <div id="errorStep3" class="alert-error"></div>
+        <div id="competencyContainer"></div>
+
+        <div class="nav-actions">
+          <button type="button" class="btn btn-secondary" id="btnPrev3">← Geri</button>
+          <button type="button" class="btn btn-primary" id="btnNext3">Devam Et →</button>
+        </div>
+      </section>
+
+      <!-- ADIM 4: Koşullu Ders IPA Modülü (1-4. Sınıf) VEYA Mezun YBS 402 Modülü -->
+      <section id="step4" class="card step-section hidden">
         <div id="studentCoursesModule" class="hidden">
-          <h2>3. Ders Bazlı Önem ve Yeterlilik Değerlendirmesi (IPA)</h2>
+          <h2>4. Ders Bazlı Önem ve Yeterlilik Değerlendirmesi (IPA)</h2>
           <p class="card-subtitle">
             Önce <strong>fiilen aldığınız / şu an almakta olduğunuz dersleri</strong> işaretleyiniz (almadığınız
             derslerin işaretini kaldırabilirsiniz). Ardından seçtiğiniz her ders için mavi ve mor kutulardaki iki ayrı soruyu puanlayınız.
@@ -229,21 +249,49 @@
             • <strong style="color: #7e22ce;">2. Soru (Mor Kutu — Kendi Aldığın Dersin Yeterliliği):</strong> Bölümde <em>kendi aldığınız bu dersin</em> fiili içeriğinin, işlenişinin ve uygulamasının ne kadar yeterli olduğu (1: Çok Yetersiz — 5: Çok Yeterli).
           </div>
 
-          <div id="errorStep3Student" class="alert-error"></div>
+          <div id="errorStep4Student" class="alert-error"></div>
           <div id="coursePickerContainer"></div>
           <div id="ipaCardsContainer"></div>
         </div>
 
         <div id="alumniModule" class="hidden">
-          <h2>3. İşyerinde Eğitim (YBS 402) ve Sektörel Yetkinlik Analizi</h2>
+          <h2>4. İşyerinde Eğitim (YBS 402) ve Sektörel Yetkinlik Analizi</h2>
           <p class="card-subtitle">
             8. yarıyıldaki <strong>YBS 402 İş Yerinde Eğitim</strong> uygulamasını ve mezuniyet sonrası iş yaşamında
             eksikliğini hissettiğiniz yetkinlik alanlarını değerlendiriniz.
           </p>
 
-          <div id="errorStep3Alumni" class="alert-error"></div>
+          <div id="errorStep4Alumni" class="alert-error"></div>
 
-          <div id="ybs402Container" class="dimension-block"></div>
+          <div class="field-group">
+            <span class="field-label">Lisans eğitiminizde YBS 402 (İş Yerinde Eğitim) dersini aldınız mı? <span class="req">*</span></span>
+            <div class="grid-2">
+              <div class="status-option">
+                <input type="radio" name="ybs402Taken" id="ybs402Yes" value="Evet" />
+                <label for="ybs402Yes">Evet, YBS 402'yi aldım</label>
+              </div>
+              <div class="status-option">
+                <input type="radio" name="ybs402Taken" id="ybs402No" value="Hayir" />
+                <label for="ybs402No">Hayır, YBS 402'yi almadım<small>Önceki dönem mezunuyum</small></label>
+              </div>
+            </div>
+          </div>
+
+          <div id="ybs402SkippedNote" class="info-box hidden">
+            YBS 402 (İş Yerinde Eğitim) uygulaması öncesindeki dönem mezunu olduğunuz için ilgili süreç soruları
+            atlanmıştır. Aşağıdaki sektörel yetkinlik sorusunu yanıtlayarak devam edebilirsiniz.
+          </div>
+
+          <div id="ybs402QuestionsWrap" class="hidden">
+            <div id="ybs402Container" class="dimension-block"></div>
+
+            <div class="field-group" style="margin-top: 18px;">
+              <span class="field-label">
+                İşyerinde Eğitim (YBS 402) sürecinin iyileştirilmesi için öncelikli gördüğünüz adımlar (En fazla 3 alan seçiniz) <span class="req">*</span>
+              </span>
+              <div id="ybs402ImprovementsContainer" class="checkbox-list"></div>
+            </div>
+          </div>
 
           <div class="field-group" style="margin-top: 18px;">
             <span class="field-label">
@@ -251,30 +299,23 @@
             </span>
             <div id="skillGapsContainer" class="checkbox-list"></div>
           </div>
-
-          <div class="field-group" style="margin-top: 18px;">
-            <span class="field-label">
-              İşyerinde Eğitim (YBS 402) sürecinin iyileştirilmesi için öncelikli gördüğünüz adımlar (En fazla 3 alan seçiniz) <span class="req">*</span>
-            </span>
-            <div id="ybs402ImprovementsContainer" class="checkbox-list"></div>
-          </div>
         </div>
 
         <div class="nav-actions">
-          <button type="button" class="btn btn-secondary" id="btnPrev3">← Geri</button>
-          <button type="button" class="btn btn-primary" id="btnNext3">Son Adıma Geç →</button>
+          <button type="button" class="btn btn-secondary" id="btnPrev4">← Geri</button>
+          <button type="button" class="btn btn-primary" id="btnNext4">Son Adıma Geç →</button>
         </div>
       </section>
 
-      <!-- ADIM 4: Yapılandırılmış (Seçilebilir) Danışma Kurulu Öncelikleri ve Gönderim -->
-      <section id="step4" class="card step-section hidden">
-        <h2>4. Yapay Zekâ, Öğretim Planı ve Bölüm Öncelikleri</h2>
+      <!-- ADIM 5: Yapılandırılmış (Seçilebilir) Danışma Kurulu Öncelikleri ve Gönderim -->
+      <section id="step5" class="card step-section hidden">
+        <h2>5. Yapay Zekâ, Öğretim Planı ve Bölüm Öncelikleri</h2>
         <p class="card-subtitle">
           Aşağıdaki üç başlıkta öncelikli gördüğünüz seçenekleri işaretleyiniz. Yanıtlar frekans analizine tabi tutularak
           18 Aralık 2026 Bölüm Danışma Kurulu'na sunulacaktır.
         </p>
 
-        <div id="errorStep4" class="alert-error"></div>
+        <div id="errorStep5" class="alert-error"></div>
 
         <div class="field-group">
           <span class="field-label">
@@ -297,8 +338,22 @@
           <div id="step4SupportContainer" class="checkbox-list"></div>
         </div>
 
+        <div class="field-group" style="margin-top: 22px;">
+          <label class="field-label" for="openBoardSuggestion">
+            4. Danışma Kuruluna iletmek istediğiniz ek öneriniz (İsteğe bağlı)
+          </label>
+          <span class="field-hint" style="color: #991b1b; font-weight: 500;">
+            Lütfen kişi veya öğretim elemanı adı yazmayınız.
+          </span>
+          <textarea
+            id="openBoardSuggestion"
+            maxlength="1000"
+            placeholder="Bölümümüzün eğitim kalitesi, ders içerikleri veya işleyişine yönelik Danışma Kuruluna iletmek istediğiniz ek görüşlerinizi yazabilirsiniz."
+          ></textarea>
+        </div>
+
         <div class="nav-actions">
-          <button type="button" class="btn btn-secondary" id="btnPrev4">← Geri</button>
+          <button type="button" class="btn btn-secondary" id="btnPrev5">← Geri</button>
           <button type="submit" class="btn btn-success" id="btnSubmit">Anketi Gönder</button>
         </div>
       </section>

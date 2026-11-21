@@ -10,16 +10,19 @@
 const CONFIG = {
   // Google Apps Script Web App URL'si (Aktif Canlı Bağlantı)
   APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbz6h8F6O08vyJF91viVWD2WenSBbbQF7AD2aRyh1m66ZaI0jN2jMTCggdTHDgjCtaK9/exec",
-  SURVEY_VERSION: "2026.11-STAR-v1",
+  SURVEY_VERSION: "2026.11-STAR-v3",
   MIN_EXPECTED_SECONDS: 45,
 };
 
+const SCALE_NA_VALUE = "Fikrim yok";
+
 const LIKERT_SCALE = [
-  { value: 1, short: "1", label: "Kesinlikle Katılmıyorum" },
-  { value: 2, short: "2", label: "Katılmıyorum" },
-  { value: 3, short: "3", label: "Kararsızım" },
-  { value: 4, short: "4", label: "Katılıyorum" },
-  { value: 5, short: "5", label: "Kesinlikle Katılıyorum" },
+  { value: "1", short: "1", label: "Kesinlikle Katılmıyorum", isNa: false },
+  { value: "2", short: "2", label: "Katılmıyorum", isNa: false },
+  { value: "3", short: "3", label: "Kararsızım", isNa: false },
+  { value: "4", short: "4", label: "Katılıyorum", isNa: false },
+  { value: "5", short: "5", label: "Kesinlikle Katılıyorum", isNa: false },
+  { value: SCALE_NA_VALUE, short: "—", label: "Fikrim yok", isNa: true },
 ];
 
 const IPA_IMPORTANCE_LABELS = {
@@ -55,8 +58,8 @@ const COMMON_SCALE_DIMENSIONS = [
       },
       {
         code: "MG2",
-        studentText: "Yapay zekâ, veri analitiği ve modern yazılım araçları ders içeriklerine yeterli düzeyde entegre edilmektedir.",
-        alumniText: "Yapay zekâ, veri analitiği ve modern yazılım araçları ders içeriklerine yeterli düzeyde entegre edilmişti.",
+        studentText: "Güncel yapay zekâ teknolojileri ders içeriklerine yeterli düzeyde entegre edilmektedir.",
+        alumniText: "Güncel yapay zekâ teknolojileri ders içeriklerine yeterli düzeyde entegre edilmişti.",
       },
       {
         code: "MG3",
@@ -82,8 +85,8 @@ const COMMON_SCALE_DIMENSIONS = [
       },
       {
         code: "UO2",
-        studentText: "Derslerdeki mevcut ölçme-değerlendirme yapısı (vize ve final sınav ağırlığı), uygulama ve problem çözme becerilerimi ölçmek için yeterlidir.",
-        alumniText: "Derslerdeki ölçme-değerlendirme yapısı (vize ve final sınav ağırlığı), uygulama ve problem çözme becerilerimi ölçmek için yeterliydi.",
+        studentText: "Derslerdeki mevcut ölçme-değerlendirme yapısı, uygulama ve problem çözme becerilerimi ölçmek için yeterlidir.",
+        alumniText: "Derslerdeki ölçme-değerlendirme yapısı, uygulama ve problem çözme becerilerimi ölçmek için yeterliydi.",
       },
       {
         code: "UO3",
@@ -92,8 +95,8 @@ const COMMON_SCALE_DIMENSIONS = [
       },
       {
         code: "UO4",
-        studentText: "Derslerin işlendiği laboratuvarların donanım, yazılım ve teknik altyapı imkânları uygulama yapmak için yeterlidir.",
-        alumniText: "Derslerin işlendiği laboratuvarların donanım, yazılım ve teknik altyapı imkânları uygulama yapmak için yeterliydi.",
+        studentText: "Bilgisayar laboratuvarlarının teknik imkânları ders uygulamalarını gerçekleştirmek için yeterlidir.",
+        alumniText: "Bilgisayar laboratuvarlarının teknik imkânları ders uygulamalarını gerçekleştirmek için yeterliydi.",
       },
     ],
   },
@@ -109,8 +112,8 @@ const COMMON_SCALE_DIMENSIONS = [
       },
       {
         code: "PT2",
-        studentText: "Yarıyıllar arasındaki ders sıralaması ve dönem içi iş yükü (AKTS) dengelidir.",
-        alumniText: "Yarıyıllar arasındaki ders sıralaması ve dönem içi iş yükü (AKTS) dengeliydi.",
+        studentText: "Derslerin yarıyıllara göre iş yükü (AKTS) dağılımı dengelidir.",
+        alumniText: "Derslerin yarıyıllara göre iş yükü (AKTS) dağılımı dengeliydi.",
       },
       {
         code: "PT3",
@@ -131,8 +134,8 @@ const COMMON_SCALE_DIMENSIONS = [
     items: [
       {
         code: "AD1",
-        studentText: "Ders seçimi, müfredat geçişleri ve akademik süreçlerde akademik danışmanımdan zamanında ve etkili rehberlik alabiliyorum.",
-        alumniText: "Ders seçimi ve akademik süreçlerde akademik danışmanımdan zamanında ve etkili rehberlik alabildim.",
+        studentText: "Akademik danışmanımdan akademik süreçlerime ilişkin yeterli rehberlik alabiliyorum.",
+        alumniText: "Akademik danışmanımdan akademik süreçlerime ilişkin yeterli rehberlik alabildim.",
       },
       {
         code: "AD2",
@@ -154,9 +157,46 @@ const COMMON_SCALE_DIMENSIONS = [
 ];
 
 /**
+ * Katman 2B: Genel Yetkinlikler (C1–C6) — Ayrı Blok (16 Maddelik Ölçeğin EFA'sına Dahil Edilmez)
+ * Öğrenci, Mezun ve İşveren anketlerinde birebir aynı madde metinleriyle üçlü karşılaştırma için kullanılır.
+ */
+const COMPETENCY_NA_VALUE = SCALE_NA_VALUE;
+
+const COMPETENCY_SCALE = [
+  { value: "1", short: "1", label: "Hiç", isNa: false },
+  { value: "2", short: "2", label: "Az", isNa: false },
+  { value: "3", short: "3", label: "Orta", isNa: false },
+  { value: "4", short: "4", label: "İyi", isNa: false },
+  { value: "5", short: "5", label: "Çok iyi", isNa: false },
+  { value: COMPETENCY_NA_VALUE, short: "—", label: "Fikrim yok", isNa: true },
+];
+
+const GENERAL_COMPETENCIES = {
+  title: "Genel Yetkinlikler",
+  studentStem: "Program şu ana kadar aşağıdaki yetkinlikleri size ne ölçüde kazandırdı?",
+  alumniStem: "Program aşağıdaki yetkinlikleri size ne ölçüde kazandırdı?",
+  items: [
+    { code: "C1", text: "Alanındaki kuramsal ve olgusal bilgiyi kullanma" },
+    { code: "C2", text: "Bilgiyi uygulamaya dönüştürme ve problem çözme" },
+    { code: "C3", text: "Bağımsız çalışma ve sorumluluk alma" },
+    { code: "C4", text: "Yeni bilgi ve teknolojileri kendi kendine öğrenebilme" },
+    { code: "C5", text: "Ekip çalışması, iletişim ve sunum" },
+    { code: "C6", text: "Mesleğe özgü araç ve yöntemleri kullanma" },
+  ],
+};
+
+const COURSE_GROUPS = {
+  PROG: "Programlama ve Yazılım Geliştirme",
+  DATA_AI: "Veri, Yapay Zekâ ve Nicel Yöntemler",
+  IS_TECH: "Bilişim Sistemleri ve Kurumsal Teknoloji",
+  MGMT: "İşletme, Yönetim ve Girişimcilik",
+  LANG_SOC: "Yabancı Dil ve Toplumsal Katkı",
+};
+
+/**
  * Katman 3A: Fiili Ders Programları (2025-2026 Bahar ve 2026-2027 Güz)
  * Her sınıfa yalnızca tamamladığı son Bahar yarıyılı ve devam ettiği mevcut Güz yarıyılı açılır.
- * ders_turu: "YBS" (bölüm alan dersi) | "Ortak" (YÖK / üniversite ortak dersi)
+ * ders_turu: "YBS" (bölüm alan dersi) | "Ortak" (üniversite ortak dersi — yalnızca İngilizce ve TDP 301)
  */
 const CURRICULUM_BY_CLASS = {
   "1": [
@@ -166,15 +206,13 @@ const CURRICULUM_BY_CLASS = {
       termBadge: "2026–2027 Güz (Devam Eden Dönem)",
       termType: "Devam Eden (2026-27 Güz)",
       courses: [
-        { code: "YBS 151", name: "Bilişim Sistemleri ve Teknolojilerine Giriş", category: "YBS", mandatory: true },
-        { code: "YBS 153", name: "Algoritma ve Programlamaya Giriş", category: "YBS", mandatory: true },
-        { code: "YBS 155", name: "Matematik", category: "YBS", mandatory: true },
-        { code: "YBS 157", name: "Pazarlama İlkeleri", category: "YBS", mandatory: true },
-        { code: "YBS 159", name: "İktisada Giriş I", category: "YBS", mandatory: true },
-        { code: "KPD 101", name: "Kariyer Planlama", category: "Ortak", mandatory: true },
-        { code: "YBD 101", name: "İngilizce I", category: "Ortak", mandatory: true },
-        { code: "TDB 101", name: "Türk Dili I", category: "Ortak", mandatory: true },
-        { code: "ATA 101", name: "Atatürk İlkeleri ve İnkılap Tarihi I", category: "Ortak", mandatory: true },
+        { code: "YBS 151", name: "Bilişim Sistemleri ve Teknolojilerine Giriş", category: "YBS", group: COURSE_GROUPS.IS_TECH, mandatory: true },
+        { code: "YBS 153", name: "Algoritma ve Programlamaya Giriş", category: "YBS", group: COURSE_GROUPS.PROG, mandatory: true },
+        { code: "YBS 155", name: "Matematik", category: "YBS", group: COURSE_GROUPS.DATA_AI, mandatory: true },
+        { code: "YBS 157", name: "Pazarlama İlkeleri", category: "YBS", group: COURSE_GROUPS.MGMT, mandatory: true },
+        { code: "YBS 159", name: "İktisada Giriş I", category: "YBS", group: COURSE_GROUPS.MGMT, mandatory: true },
+        { code: "KPD 101", name: "Kariyer Planlama", category: "YBS", group: COURSE_GROUPS.MGMT, mandatory: true },
+        { code: "YBD 101", name: "İngilizce I", category: "Ortak", group: COURSE_GROUPS.LANG_SOC, mandatory: true },
       ],
     },
   ],
@@ -185,14 +223,12 @@ const CURRICULUM_BY_CLASS = {
       termBadge: "2025–2026 Bahar (Tamamlanan Dönem)",
       termType: "Tamamlanan (2025-26 Bahar)",
       courses: [
-        { code: "YBS 158", name: "Veri Yapıları ve Algoritmalar", category: "YBS", mandatory: true },
-        { code: "YBS 156", name: "Bilgisayar Donanımı ve İşletim Sistemleri", category: "YBS", mandatory: true },
-        { code: "YBS 154", name: "İleri Düzey Ofis Uygulamaları", category: "YBS", mandatory: true },
-        { code: "YBS 152", name: "Yönetim ve Organizasyon", category: "YBS", mandatory: true },
-        { code: "YBS 160", name: "İktisada Giriş II", category: "YBS", mandatory: true },
-        { code: "YBD 102", name: "İngilizce II", category: "Ortak", mandatory: true },
-        { code: "TDB 102", name: "Türk Dili II", category: "Ortak", mandatory: true },
-        { code: "ATA 102", name: "Atatürk İlkeleri ve İnkılap Tarihi II", category: "Ortak", mandatory: true },
+        { code: "YBS 158", name: "Veri Yapıları ve Algoritmalar", category: "YBS", group: COURSE_GROUPS.PROG, mandatory: true },
+        { code: "YBS 156", name: "Bilgisayar Donanımı ve İşletim Sistemleri", category: "YBS", group: COURSE_GROUPS.IS_TECH, mandatory: true },
+        { code: "YBS 154", name: "İleri Düzey Ofis Uygulamaları", category: "YBS", group: COURSE_GROUPS.IS_TECH, mandatory: true },
+        { code: "YBS 152", name: "Yönetim ve Organizasyon", category: "YBS", group: COURSE_GROUPS.MGMT, mandatory: true },
+        { code: "YBS 160", name: "İktisada Giriş II", category: "YBS", group: COURSE_GROUPS.MGMT, mandatory: true },
+        { code: "YBD 102", name: "İngilizce II", category: "Ortak", group: COURSE_GROUPS.LANG_SOC, mandatory: true },
       ],
     },
     {
@@ -201,14 +237,14 @@ const CURRICULUM_BY_CLASS = {
       termBadge: "2026–2027 Güz (Devam Eden Dönem)",
       termType: "Devam Eden (2026-27 Güz)",
       courses: [
-        { code: "YBS 251", name: "Nesne Yönelimli Programlama - 1", category: "YBS", mandatory: true },
-        { code: "YBS 253", name: "Web Tabanlı Programlama - 1", category: "YBS", mandatory: true },
-        { code: "YBS 255", name: "Veritabanına Giriş", category: "YBS", mandatory: true },
-        { code: "YBS 257", name: "Proje Yönetimi", category: "YBS", mandatory: true },
-        { code: "YBS 259", name: "Örgütsel Davranış", category: "YBS", mandatory: true },
-        { code: "YBS 261", name: "İstatistik I", category: "YBS", mandatory: true },
-        { code: "YBS 265", name: "Genel Muhasebe I", category: "YBS", mandatory: true },
-        { code: "YBS 263", name: "Uygulamalı Girişimcilik", category: "YBS", mandatory: false },
+        { code: "YBS 251", name: "Nesne Yönelimli Programlama - 1", category: "YBS", group: COURSE_GROUPS.PROG, mandatory: true },
+        { code: "YBS 253", name: "Web Tabanlı Programlama - 1", category: "YBS", group: COURSE_GROUPS.PROG, mandatory: true },
+        { code: "YBS 255", name: "Veritabanına Giriş", category: "YBS", group: COURSE_GROUPS.DATA_AI, mandatory: true },
+        { code: "YBS 257", name: "Proje Yönetimi", category: "YBS", group: COURSE_GROUPS.MGMT, mandatory: true },
+        { code: "YBS 259", name: "Örgütsel Davranış", category: "YBS", group: COURSE_GROUPS.MGMT, mandatory: true },
+        { code: "YBS 261", name: "İstatistik I", category: "YBS", group: COURSE_GROUPS.DATA_AI, mandatory: true },
+        { code: "YBS 265", name: "Genel Muhasebe I", category: "YBS", group: COURSE_GROUPS.MGMT, mandatory: true },
+        { code: "YBS 263", name: "Uygulamalı Girişimcilik", category: "YBS", group: COURSE_GROUPS.MGMT, mandatory: false },
       ],
     },
   ],
@@ -219,14 +255,14 @@ const CURRICULUM_BY_CLASS = {
       termBadge: "2025–2026 Bahar (Tamamlanan Dönem)",
       termType: "Tamamlanan (2025-26 Bahar)",
       courses: [
-        { code: "YBS 252", name: "Nesne Yönelimli Programlama - 2", category: "YBS", mandatory: true },
-        { code: "YBS 254", name: "Web Tabanlı Programlama - 2", category: "YBS", mandatory: true },
-        { code: "YBS 256", name: "Veritabanı Yönetim Sistemleri", category: "YBS", mandatory: true },
-        { code: "YBS 264", name: "Sistem Analizi ve Tasarımı", category: "YBS", mandatory: true },
-        { code: "YBS 258", name: "Bilimsel Araştırma Yöntemleri", category: "YBS", mandatory: true },
-        { code: "YBS 262", name: "İstatistik II", category: "YBS", mandatory: true },
-        { code: "YBS 260", name: "Üretim Yönetimi", category: "YBS", mandatory: true },
-        { code: "YBS 266", name: "Genel Muhasebe II", category: "YBS", mandatory: true },
+        { code: "YBS 252", name: "Nesne Yönelimli Programlama - 2", category: "YBS", group: COURSE_GROUPS.PROG, mandatory: true },
+        { code: "YBS 254", name: "Web Tabanlı Programlama - 2", category: "YBS", group: COURSE_GROUPS.PROG, mandatory: true },
+        { code: "YBS 256", name: "Veritabanı Yönetim Sistemleri", category: "YBS", group: COURSE_GROUPS.DATA_AI, mandatory: true },
+        { code: "YBS 264", name: "Sistem Analizi ve Tasarımı", category: "YBS", group: COURSE_GROUPS.IS_TECH, mandatory: true },
+        { code: "YBS 258", name: "Bilimsel Araştırma Yöntemleri", category: "YBS", group: COURSE_GROUPS.DATA_AI, mandatory: true },
+        { code: "YBS 262", name: "İstatistik II", category: "YBS", group: COURSE_GROUPS.DATA_AI, mandatory: true },
+        { code: "YBS 260", name: "Üretim Yönetimi", category: "YBS", group: COURSE_GROUPS.MGMT, mandatory: true },
+        { code: "YBS 266", name: "Genel Muhasebe II", category: "YBS", group: COURSE_GROUPS.MGMT, mandatory: true },
       ],
     },
     {
@@ -235,16 +271,14 @@ const CURRICULUM_BY_CLASS = {
       termBadge: "2026–2027 Güz (Devam Eden Dönem)",
       termType: "Devam Eden (2026-27 Güz)",
       courses: [
-        { code: "YBS 351", name: "Mobil Uygulama Geliştirme", category: "YBS", mandatory: true },
-        { code: "YBS 353", name: "Yöneylem Araştırması I", category: "YBS", mandatory: true },
-        { code: "YBS 355", name: "Karar Verme Teknikleri", category: "YBS", mandatory: true },
-        { code: "TDP 301", name: "Toplumsal Duyarlılık ve Katkı", category: "Ortak", mandatory: true },
-        { code: "YBS 3XX-BSE", name: "Bilgi Sistemleri Entegrasyonu", category: "YBS", mandatory: false },
-        { code: "YBS 3XX-YZOA", name: "Yapay Zekâ ve Öğrenen Algoritmalar", category: "YBS", mandatory: false },
-        { code: "YBS 391", name: "Bilgisayarla Görme", category: "YBS", mandatory: false },
-        { code: "YBS 387", name: "Stratejik Yönetim", category: "YBS", mandatory: false },
-        { code: "YBS 385", name: "Tüketici Davranışları", category: "YBS", mandatory: false },
-        { code: "YBS 354-G", name: "İnsan Kaynakları Yönetimi", category: "YBS", mandatory: false },
+        { code: "YBS 351", name: "Mobil Uygulama Geliştirme", category: "YBS", group: COURSE_GROUPS.PROG, mandatory: true },
+        { code: "YBS 353", name: "Yöneylem Araştırması I", category: "YBS", group: COURSE_GROUPS.DATA_AI, mandatory: true },
+        { code: "YBS 355", name: "Karar Verme Teknikleri", category: "YBS", group: COURSE_GROUPS.DATA_AI, mandatory: true },
+        { code: "TDP 301", name: "Toplumsal Duyarlılık ve Katkı", category: "Ortak", group: COURSE_GROUPS.LANG_SOC, mandatory: true },
+        { code: "YBS 381", name: "Bilgi Sistemleri Entegrasyonu", category: "YBS", group: COURSE_GROUPS.IS_TECH, mandatory: false },
+        { code: "YBS 385", name: "Tüketici Davranışları", category: "YBS", group: COURSE_GROUPS.MGMT, mandatory: false },
+        { code: "YBS 387", name: "Stratejik Yönetim", category: "YBS", group: COURSE_GROUPS.MGMT, mandatory: false },
+        { code: "YBS 391", name: "Bilgisayarla Görme", category: "YBS", group: COURSE_GROUPS.DATA_AI, mandatory: false },
       ],
     },
   ],
@@ -255,17 +289,18 @@ const CURRICULUM_BY_CLASS = {
       termBadge: "2025–2026 Bahar (Tamamlanan Dönem)",
       termType: "Tamamlanan (2025-26 Bahar)",
       courses: [
-        { code: "YBS 352", name: "Yapay Zekâ ve Makine Öğrenmesi", category: "YBS", mandatory: true },
-        { code: "YBS 356", name: "Yöneylem Araştırması II", category: "YBS", mandatory: true },
-        { code: "YBS 354", name: "İnsan Kaynakları Yönetimi", category: "YBS", mandatory: true },
-        { code: "YBS 358", name: "Finansal Yönetim", category: "YBS", mandatory: true },
-        { code: "YBS 386", name: "Veri İletişimi ve Bilgisayar Ağları", category: "YBS", mandatory: false },
-        { code: "YBS 384", name: "Bilgisayar Tabanlı Optimizasyon Uygulamaları", category: "YBS", mandatory: false },
-        { code: "YBS 388", name: "Kalite Yönetim Sistemleri", category: "YBS", mandatory: false },
+        { code: "YBS 352", name: "Yapay Zekâ ve Makine Öğrenmesi", category: "YBS", group: COURSE_GROUPS.DATA_AI, mandatory: true },
+        { code: "YBS 356", name: "Yöneylem Araştırması II", category: "YBS", group: COURSE_GROUPS.DATA_AI, mandatory: true },
+        { code: "YBS 354", name: "İnsan Kaynakları Yönetimi", category: "YBS", group: COURSE_GROUPS.MGMT, mandatory: true },
+        { code: "YBS 358", name: "Finansal Yönetim", category: "YBS", group: COURSE_GROUPS.MGMT, mandatory: true },
+        { code: "YBS 386", name: "Veri İletişimi ve Bilgisayar Ağları", category: "YBS", group: COURSE_GROUPS.IS_TECH, mandatory: false },
+        { code: "YBS 384", name: "Bilgisayar Tabanlı Optimizasyon Uygulamaları", category: "YBS", group: COURSE_GROUPS.DATA_AI, mandatory: false },
+        { code: "YBS 388", name: "Kalite Yönetim Sistemleri", category: "YBS", group: COURSE_GROUPS.MGMT, mandatory: false },
         {
           code: "YBS 473-B",
           name: "Uygulamalı Veri Madenciliği (2025–26 Bahar)",
           category: "YBS",
+          group: COURSE_GROUPS.DATA_AI,
           mandatory: false,
           onlyEvening: true,
         },
@@ -277,14 +312,14 @@ const CURRICULUM_BY_CLASS = {
       termBadge: "2026–2027 Güz (Devam Eden Dönem)",
       termType: "Devam Eden (2026-27 Güz)",
       courses: [
-        { code: "YBS 451", name: "Yönetim Bilişim Sistemlerinde Güncel Konular", category: "YBS", mandatory: true },
-        { code: "YBS 471", name: "Kurumsal Veri Yönetimi", category: "YBS", mandatory: false },
-        { code: "YBS 473", name: "Uygulamalı Veri Madenciliği", category: "YBS", mandatory: false },
-        { code: "YBS 475", name: "Derin Öğrenme", category: "YBS", mandatory: false },
-        { code: "YBS 485", name: "Robotik Uygulamaları", category: "YBS", mandatory: false },
-        { code: "YBS 489", name: "Kurumsal Kaynak Planlama (ERP)", category: "YBS", mandatory: false },
-        { code: "YBS 477", name: "Müşteri İlişkileri Yönetimi (CRM)", category: "YBS", mandatory: false },
-        { code: "YBS 483", name: "Maliyet Muhasebesi", category: "YBS", mandatory: false },
+        { code: "YBS 451", name: "Yönetim Bilişim Sistemlerinde Güncel Konular", category: "YBS", group: COURSE_GROUPS.IS_TECH, mandatory: true },
+        { code: "YBS 471", name: "Kurumsal Veri Yönetimi", category: "YBS", group: COURSE_GROUPS.DATA_AI, mandatory: false },
+        { code: "YBS 473", name: "Uygulamalı Veri Madenciliği", category: "YBS", group: COURSE_GROUPS.DATA_AI, mandatory: false },
+        { code: "YBS 475", name: "Derin Öğrenme", category: "YBS", group: COURSE_GROUPS.DATA_AI, mandatory: false },
+        { code: "YBS 485", name: "Robotik Uygulamaları", category: "YBS", group: COURSE_GROUPS.IS_TECH, mandatory: false },
+        { code: "YBS 489", name: "Kurumsal Kaynak Planlama (ERP)", category: "YBS", group: COURSE_GROUPS.IS_TECH, mandatory: false },
+        { code: "YBS 477", name: "Müşteri İlişkileri Yönetimi (CRM)", category: "YBS", group: COURSE_GROUPS.MGMT, mandatory: false },
+        { code: "YBS 483", name: "Maliyet Muhasebesi", category: "YBS", group: COURSE_GROUPS.MGMT, mandatory: false },
       ],
     },
   ],
@@ -339,7 +374,7 @@ const COURSE_IMPROVEMENT_TAGS = [
   "Uygulama / kodlama artırılsın",
   "İçerik güncellensin",
   "Ders işlenişi daha etkileşimli ve örnekli olsun",
-  "Sadece vize-final yerine proje/ödev olsun",
+  "Dönem içi proje ve ödev ağırlığı artırılsın",
   "Önkoşul / temel bilgisi eksik kaldı",
   "Ders saati veya lab imkânı yetersiz",
 ];
@@ -377,7 +412,7 @@ const STEP4_QUESTIONS = {
   curriculum: {
     maxSelect: 3,
     options: [
-      "Sadece vize–final yerine dönem içi proje/ödev ağırlığının artırılması",
+      "Dönem içi proje ve ödev ağırlığının artırılması",
       "Teknik derslerde uygulamalı laboratuvar saatinin resmî müfredata eklenmesi",
       "Sektör profesyonelleriyle ortak vaka çalışmaları ve uygulamalı seminerler",
       "Dersler arası içerik tekrarının azaltılıp önkoşul zincirinin düzenlenmesi",
