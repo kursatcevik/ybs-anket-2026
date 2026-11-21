@@ -678,7 +678,8 @@
       "ybs402Improvements",
       ALUMNI_YBS402_IMPROVEMENTS,
       3,
-      "errorStep4Alumni"
+      "errorStep4Alumni",
+      "Mevcut süreç genel olarak yeterliydi"
     );
   }
 
@@ -688,25 +689,28 @@
       "step4AiTech",
       STEP4_QUESTIONS.aiTech.options,
       STEP4_QUESTIONS.aiTech.maxSelect,
-      "errorStep5"
+      "errorStep5",
+      STEP4_QUESTIONS.aiTech.exclusiveOption
     );
     renderCheckboxGroup(
       step4CurriculumContainer,
       "step4Curriculum",
       STEP4_QUESTIONS.curriculum.options,
       STEP4_QUESTIONS.curriculum.maxSelect,
-      "errorStep5"
+      "errorStep5",
+      STEP4_QUESTIONS.curriculum.exclusiveOption
     );
     renderCheckboxGroup(
       step4SupportContainer,
       "step4Support",
       STEP4_QUESTIONS.support.options,
       STEP4_QUESTIONS.support.maxSelect,
-      "errorStep5"
+      "errorStep5",
+      STEP4_QUESTIONS.support.exclusiveOption
     );
   }
 
-  function renderCheckboxGroup(container, name, options, maxSelect, errorBoxId) {
+  function renderCheckboxGroup(container, name, options, maxSelect, errorBoxId, exclusiveOption) {
     if (!container) return;
     container.innerHTML = "";
     options.forEach((optText, idx) => {
@@ -718,6 +722,18 @@
       `;
       const cb = label.querySelector("input");
       cb.addEventListener("change", () => {
+        if (exclusiveOption && cb.checked) {
+          const allBoxes = document.querySelectorAll(`input[name="${name}"]`);
+          if (cb.value === exclusiveOption) {
+            allBoxes.forEach((other) => {
+              if (other !== cb) other.checked = false;
+            });
+          } else {
+            allBoxes.forEach((other) => {
+              if (other.value === exclusiveOption) other.checked = false;
+            });
+          }
+        }
         const checkedCount = document.querySelectorAll(`input[name="${name}"]:checked`).length;
         if (checkedCount > maxSelect) {
           cb.checked = false;
@@ -914,7 +930,6 @@
       commonScale,
       generalCompetencies,
       courses,
-      extraCoursesNote: "",
       alumniData,
       openEnded: {
         aiAndTech: getCheckedValues("step4AiTech").join(" | "),

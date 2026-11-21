@@ -397,6 +397,7 @@ const ALUMNI_YBS402_IMPROVEMENTS = [
 const STEP4_QUESTIONS = {
   aiTech: {
     maxSelect: 4,
+    exclusiveOption: "Mevcut teknoloji kapsamını yeterli buluyorum (ek önerim yok)",
     options: [
       "Üretken Yapay Zekâ, Büyük Dil Modelleri (LLM) ve Yapay Zekâ Ajanları",
       "Uygulamalı Makine Öğrenmesi ve Derin Öğrenme Projeleri",
@@ -407,10 +408,12 @@ const STEP4_QUESTIONS = {
       "Siber Güvenlik ve Bilgi Güvenliği Yönetimi",
       "Kurumsal Sistemler (SAP / ERP, CRM) ve İş Süreçleri Yönetimi",
       "Çevik Proje Yönetimi (Agile / Scrum) ve Ürün Yönetimi",
+      "Mevcut teknoloji kapsamını yeterli buluyorum (ek önerim yok)",
     ],
   },
   curriculum: {
     maxSelect: 3,
+    exclusiveOption: "Mevcut öğretim planı ve değerlendirme yapısını genel olarak yeterli buluyorum",
     options: [
       "Dönem içi proje ve ödev ağırlığının artırılması",
       "Teknik derslerde uygulamalı laboratuvar saatinin resmî müfredata eklenmesi",
@@ -419,10 +422,12 @@ const STEP4_QUESTIONS = {
       "Yıllık müfredat değişikliklerinin azaltılarak öğretim planının sabitlenmesi",
       "Seçmeli ders çeşitliliğinin ve güncel uzmanlaşma alanlarının artırılması",
       "Derslerde kullanılan yazılım ve araçların güncel sürümlere taşınması",
+      "Mevcut öğretim planı ve değerlendirme yapısını genel olarak yeterli buluyorum",
     ],
   },
   support: {
     maxSelect: 3,
+    exclusiveOption: "Mevcut danışmanlık ve bölüm süreçlerini genel olarak yeterli buluyorum",
     options: [
       "Akademik danışmanlarla daha düzenli görüşme ve ders seçimi rehberliği",
       "İşyerinde Eğitim (YBS 402) ve staj için kurum bulma/eşleştirme desteği",
