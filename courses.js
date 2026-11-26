@@ -9,7 +9,7 @@
 
 const CONFIG = {
   // Google Apps Script Web App URL'si (Aktif Canlı Bağlantı)
-  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbz6h8F6O08vyJF91viVWD2WenSBbbQF7AD2aRyh1m66ZaI0jN2jMTCggdTHDgjCtaK9/exec",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwOcRe5L70vzaiWYtnJvH68m1vdnlgdZdUvDcSeWWN2F_qaois1ZbzrUcsbIKZb9co-/exec",
   SURVEY_VERSION: "2026.11-STAR-v4",
   // İstemci/sunucu hiçbir yanıtı süre nedeniyle reddetmez; yalnızca analiz aşamasında bayraklanır.
   ANALYSIS_MIN_SECONDS_STUDENT: 85,
